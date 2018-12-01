@@ -1,0 +1,42 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: kompose convert
+    kompose.version: 1.16.0 (0c01309)
+  creationTimestamp: null
+  labels:
+    io.kompose.service: webserver
+  name: webserver
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        io.kompose.service: webserver
+    spec:
+      containers:
+      - image: nginx:alpine
+        name: webserver
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+        resources: {}
+        tty: true
+        volumeMounts:
+        - mountPath: /var/www
+          name: webserver-claim0
+        - mountPath: /etc/nginx/conf.d/
+          name: webserver-claim1
+      restartPolicy: Always
+      volumes:
+      - name: webserver-claim0
+        persistentVolumeClaim:
+          claimName: webserver-claim0
+      - name: webserver-claim1
+        persistentVolumeClaim:
+          claimName: webserver-claim1
+status: {}
